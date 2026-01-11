@@ -2,77 +2,389 @@
 <html lang="it">
 <head>
     <meta charset="utf-8">
-    <title>B2B Scout - System Status</title>
+    <title>system-unlock.net</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Favicon senza file (SVG Disegnato Verde Neon) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 stroke=%22%2300ff88%22 stroke-width=%2210%22 fill=%22none%22/><circle cx=%2250%22 cy=%2250%22 r=%2215%22 fill=%22%2300ff88%22/></svg>">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 stroke=%22%2300ff88%22 stroke-width=%2210%22 fill=%22none%22/><text x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2300ff88%22 font-family=%22monospace%22>D</text></svg>">
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Roboto Mono', monospace;
             background: #050505;
             color: #00ff88;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            justify-content: flex-start;
+            overflow-x: hidden;
         }
+        
+        /* Scanlines Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* Subtle Flicker */
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.93; }
+            20% { opacity: 0.98; }
+            25% { opacity: 0.95; }
+            30% { opacity: 0.9; }
+            100% { opacity: 1; }
+        }
+
+        /* Scrollbar Customization */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb {
+            background: #00ff88;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: #fff; }
+
+        /* --- NEW VISUAL UPGRADES --- */
+        
+        /* 1. Hacker Selection */
+        ::selection {
+            background: #00ff88;
+            color: #000;
+            text-shadow: none;
+        }
+
+        /* 2. CRT Turn-on Animation */
+        @keyframes turnOn {
+            0% { transform: scale(1, 0.002); opacity: 0; }
+            35% { transform: scale(1, 0.002); opacity: 1; }
+            60% { transform: scale(1, 1); opacity: 1; }
+            100% { transform: scale(1, 1); opacity: 1; }
+        }
+
         .matrix-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(0,25,0,1) 0%, rgba(0,0,0,1) 90%);
+            background: 
+                radial-gradient(circle at center, rgba(0, 40, 0, 0.4) 0%, rgba(0,0,0,0.95) 80%),
+                linear-gradient(0deg, rgba(0,0,0,0.1) 50%, rgba(0, 50, 0, 0.1) 50%);
+            background-size: 100% 100%, 100% 4px;
             z-index: -1;
         }
-        .container { text-align: center; padding: 20px; max-width: 800px; }
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 5vw, 4rem);
-            margin-bottom: 20px;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        .container { 
+            text-align: center; 
+            padding: 60px 20px; 
+            max-width: 900px; 
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            /* Combine flicker and turnOn animations - Origin top to prevent jumping */
+            transform-origin: top;
+            animation: turnOn 0.4s ease-out forwards, flicker 0.15s infinite 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0; /* Start hidden for turnOn */
         }
-        p { font-size: 1.2rem; color: #888; margin-bottom: 40px; }
-        .status-box {
-            border: 1px solid #333;
-            background: rgba(0,0,0,0.8);
-            padding: 30px;
-            border-radius: 8px;
-            display: inline-block;
-        }
-        .code { color: #ff5f56; font-weight: bold; }
-        .message { color: #ccc; margin-top: 10px; display: block; }
         
-        .footer {
-            position: absolute; bottom: 20px; width: 100%; text-align: center;
-            font-size: 0.7rem; color: #444;
+        /* 3. Tactical Cursor */
+        body {
+            cursor: crosshair;
         }
+        
+        a, .btn-link, button {
+            cursor: cell; /* Different cursor for clickable items */
+        }
+        
+        /* Nickname Retro Style */
+        .retro-nick {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(1.2rem, 4vw, 3rem);
+            color: #fff;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.8), 2px 2px 0px #003300;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+        
+        .subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            color: #888;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #333;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        /* Showcase Grid */
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .project-card {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid #333;
+            padding: 25px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card:hover {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: #333;
+            transition: background 0.3s;
+        }
+        .project-card:hover::before { background: #00ff88; }
+        
+        .project-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .project-desc {
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            background: #111;
+            border: 1px solid #444;
+            color: #00ff88;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+
+        .btn-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border-bottom: 1px dotted #555;
+            transition: color 0.3s;
+        }
+        .btn-link:hover { color: #00ff88; border-bottom-style: solid; }
+
+        /* Footer Info */
+        .footer {
+            margin-top: 50px;
+            font-size: 0.75rem;
+            color: #444;
+        }
+        .footer span { color: #00ff88; }
+        
+        /* Terminal Styles */
+        .terminal-wrapper {
+            width: 100%;
+            margin: 0 0 40px;
+            text-align: left;
+        }
+        
+        .terminal-header {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 5px 5px 0 0;
+            padding: 10px 15px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+        
+        .terminal-title {
+            font-size: 0.7rem;
+            color: #666;
+            margin-left: 10px;
+            font-family: 'Roboto Mono';
+        }
+        
+        .terminal-body {
+            background: rgba(0,0,0,0.9);
+            border: 1px solid #333;
+            border-top: none;
+            padding: 20px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: #888;
+            font-family: 'Courier New', monospace';
+        }
+        
+        .prompt-char {
+            color: #00ff88;
+        }
+
+        .classified-btn {
+            opacity: 0.5;
+            cursor: default;
+        }
+
     </style>
 </head>
 <body>
+
     <div class="matrix-bg"></div>
+
     <div class="container">
-        <h1>B2B SCOUT<span style="color:#00ff88">.NET</span></h1>
         
-        <div class="status-box">
-            <span class="code">[SYSTEM SHUTDOWN]</span>
-            <span class="message">
-                Il servizio pubblico di Data Intelligence è stato interrotto.<br><br>
-                La tecnologia B2B Scout è stata acquisita e integrata<br>
-                in una nuova piattaforma privata di CRM.
-            </span>
+        <div class="retro-nick">(v^•Đĕ£tă_Ðrågøñ•^v)</div>
+        <div class="subtitle">Digital Archive // Est. 2001</div>
+
+        <div class="showcase-grid">
+            
+            <!-- Project 1: Delta Klient (The Legend) -->
+            <div class="project-card">
+                <h3 class="project-title">DELTA KLIENT V.3</h3>
+                <p class="project-desc">Il mio progetto storico più ambizioso. Client custom sviluppato per la chat eShare di Jumpy. Un pilastro delle community primi anni 2000.</p>
+                <div>
+                    <span class="tag">LEGACY</span>
+                    <span class="tag">CHAT</span>
+                    <span class="tag">JUMPY</span>
+                </div>
+                <span class="btn-link classified-btn">[HISTORY_ARCHIVED]</span>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card">
+                <h3 class="project-title">MANU_OPUS</h3>
+                <p class="project-desc">Sistema gestionale in cloud per la logistica e l'autotrasporto. Ottimizzazione flussi e AI integration.</p>
+                <div>
+                    <span class="tag">SAAS</span>
+                    <span class="tag">FLUTTER</span>
+                    <span class="tag">BETA</span>
+                </div>
+                <a href="#" class="btn-link">REQUEST ACCESS &gt;</a>
+            </div>
+
+            <!-- Project 3: Combined B2B Scout & Delta Bot -->
+            <div class="project-card">
+                <h3 class="project-title">B2B SCOUT <span class="prompt-char">//</span> DELTA_BOT</h3>
+                <p class="project-desc">Il cuore tecnologico attuale. Crawler autonomo alimentato da AI proprietaria per la Market Intelligence e la Lead Generation B2B con validazione neurale dei dati.</p>
+                <div>
+                    <span class="tag">AI</span>
+                    <span class="tag">OSINT</span>
+                    <span class="tag">DATA</span>
+                    <span class="tag">LIVE</span>
+                </div>
+                <a href="index.html" class="btn-link">ACCESS SYSTEM &gt;</a>
+            </div>
+
         </div>
 
-        <p style="margin-top: 40px; font-size: 0.9rem;">
-            &gt; Reindirizzamento dei flussi neurali... COMPLETO.<br>
-            &gt; Chiusura portali pubblici... ESEGUITO.
-        </p>
+        <!-- Terminal Log / Memorial Feed -->
+        <div class="terminal-wrapper">
+            <div class="terminal-header">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+                <span class="terminal-title">LEGACY_DECRYPTOR_V1.0.SH</span>
+            </div>
+            <div id="terminal" class="terminal-body">
+            </div>
+        </div>
+
+        <div class="footer">
+            SYSTEM UNLOCK NODE &bull; <span id="clock">LOADING...</span><br>
+            LOC: [REDACTED], ITALY &bull; BY DELTAMK
+        </div>
+
     </div>
 
-    <div class="footer">
-        &copy; 2026 B2B Scout Network &bull; End of Line.
-    </div>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toISOString().split('T')[0] + ' ' + now.toLocaleTimeString();
+        }
+        
+        // Force scroll to top on load
+        window.scrollTo(0, 0);
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Terminal Effect
+        const terminal = document.getElementById('terminal');
+        const logs = [
+            "[OK] Booting legacy kernel...",
+            "[OK] Mounting /mnt/memories/2001...",
+            "[INFO] Found encrypted fragment: 'The first line of code'",
+            "[INFO] Found encrypted fragment: 'Late night sessions...'",
+            "[INFO] Scanning legacy projects...",
+            "[SUCCESS] Recovered: Delta Klient v.3 [Jumpy eShare Module]",
+            "[WARN] Sector 0x4F corrupted. Recovering data...",
+            "[OK] Data recovered: (v^•Đĕ£tă_Ðrågøñ•^v) identity confirmed.",
+            "[INFO] Initializing showcase protocols...",
+            "> Loading ManuOpus components...",
+            "> Synchronizing B2B Scout neural net...",
+            "[SUCCESS] System ready. Welcome back, Delta."
+        ];
+
+        let logIndex = 0;
+        function typeLog() {
+            if (logIndex < logs.length) {
+                const line = document.createElement('div');
+                
+                // Create the prompt span >
+                const promptSpan = document.createElement('span');
+                promptSpan.className = 'prompt-char';
+                promptSpan.textContent = '> ';
+                
+                // Create the text node
+                const textNode = document.createTextNode(logs[logIndex]);
+                
+                line.appendChild(promptSpan);
+                line.appendChild(textNode);
+                
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+                logIndex++;
+                setTimeout(typeLog, 800 + Math.random() * 1000);
+            }
+        }
+        setTimeout(typeLog, 1000);
+    </script>
 </body>
 </html>
