@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B2B Scout | Advanced Market Intelligence System</title>
+    <title>B2B Scout | OSINT Market Intelligence</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2305070a%22/><text x=%2250%22 y=%2270%22 font-size=%2270%22 text-anchor=%22middle%22 fill=%22%2300f3ff%22 font-family=%22sans-serif%22 font-weight=%22900%22>B</text></svg>">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #05070a;
-            --card-bg: rgba(20, 30, 40, 0.7);
-            --accent: #00f3ff; /* Ciano Elettrico */
-            --accent-dim: rgba(0, 243, 255, 0.1);
+            --bg-color: #030405;
+            --card-bg: rgba(20, 30, 40, 0.6);
+            --accent: #00f3ff;
+            --accent-glow: rgba(0, 243, 255, 0.2);
             --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
+            --text-muted: #64748b;
             --border: #1e293b;
+            --success: #00ff9d;
+            --danger: #ff3366;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,283 +32,332 @@
             overflow-x: hidden;
         }
 
-        /* --- BACKGROUND FX --- */
-        .grid-bg {
+        /* --- FX BACKGROUND --- */
+        .cyber-grid {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: 
-                linear-gradient(var(--border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.1;
+                linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+            background-size: 40px 40px;
             z-index: -1;
-            transform: perspective(500px) rotateX(20deg);
-            transform-origin: top;
-            pointer-events: none;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
-        /* --- HEADER --- */
+        /* --- UI COMPONENTS --- */
         header {
-            padding: 30px 5%;
+            padding: 20px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(3, 4, 5, 0.8);
         }
-        .logo { font-family: 'Orbitron'; font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; color: #fff; }
+        
+        .logo { 
+            font-family: 'Orbitron'; font-weight: 900; font-size: 1.4rem; 
+            letter-spacing: 2px; color: #fff; text-shadow: 0 0 20px var(--accent-glow);
+        }
         .logo span { color: var(--accent); }
 
-        /* --- BUTTONS (Protezione Mail) --- */
-        .action-btn {
-            display: inline-block;
+        .btn {
             background: transparent;
             color: var(--accent);
             border: 1px solid var(--accent);
-            padding: 15px 40px;
-            font-family: 'Orbitron';
-            font-size: 1rem;
+            padding: 12px 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            text-transform: uppercase;
             letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
             text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer; /* Fondamentale */
-            user-select: none;
+            display: inline-block;
         }
         
-        .action-btn:hover {
+        .btn:hover {
             background: var(--accent);
-            color: var(--bg-color);
-            box-shadow: 0 0 30px var(--accent-dim);
+            color: #000;
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
-        .small-btn {
-            padding: 10px 20px; 
-            font-size: 0.8rem;
-        }
-
-        /* --- HERO --- */
+        /* --- HERO SECTION --- */
         .hero {
-            padding: 80px 5%;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 100px 5% 60px;
             text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tagline {
+            font-family: 'JetBrains Mono'; color: var(--accent); 
+            font-size: 0.8rem; margin-bottom: 20px; letter-spacing: 2px;
+            display: inline-block; padding: 5px 15px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            background: rgba(0, 243, 255, 0.05);
         }
 
         h1 {
-            font-family: 'Orbitron';
-            font-size: 3.5rem;
-            line-height: 1.1;
-            background: linear-gradient(to right, #fff, var(--text-muted));
+            font-family: 'Orbitron'; font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1.1; margin-bottom: 30px;
+            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto 40px auto;
+            font-size: 1.1rem; color: var(--text-muted);
+            max-width: 650px; margin: 0 auto 50px;
         }
 
-        /* --- TECH SECTION (Terminal) --- */
-        .tech-section {
+        /* --- STATS GRID --- */
+        .stats-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            padding: 80px 5%;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+        
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 25px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .stat-value { font-family: 'Orbitron'; font-size: 2rem; color: #fff; margin-bottom: 5px; }
+        .stat-label { font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+
+        /* --- TERMINAL DEMO --- */
+        .demo-section {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto 100px;
+            padding: 0 5%;
             align-items: center;
         }
 
-        .terminal-window {
-            background: #000;
+        .terminal {
+            background: #080a0c;
             border: 1px solid #333;
-            border-radius: 5px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.05);
+            border-radius: 6px;
+            padding: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
             position: relative;
         }
-        .terminal-window::before {
-            content: "SYSTEM STATUS: ONLINE";
-            position: absolute;
-            top: -25px; left: 0;
-            font-size: 0.7rem; color: var(--accent);
+        
+        .terminal-header {
+            background: #1a1d21;
+            padding: 10px 15px;
+            display: flex; gap: 8px;
+            border-bottom: 1px solid #333;
+        }
+        .dot { width: 10px; height: 10px; borderRadius: 50%; background: #333; border-radius: 50%; }
+        .dot.r { background: #ff5f56; }
+        .dot.y { background: #ffbd2e; }
+        .dot.g { background: #27c93f; }
+
+        .terminal-body { padding: 20px; color: #a9b7c6; height: 300px; overflow: hidden; position: relative; }
+        .terminal-body::after {
+            content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 50px;
+            background: linear-gradient(transparent, #080a0c);
+        }
+
+        .cmd { color: var(--accent); margin-right: 8px; }
+        .log-item { margin-bottom: 6px; opacity: 0; animation: fadeIn 0.3s forwards; }
+        .log-success { color: var(--success); }
+        .log-error { color: var(--danger); text-decoration: line-through; opacity: 0.6; }
+        
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* --- LEGAL SECTION (REVISED) --- */
+        .compliance-box {
+            background: rgba(0, 243, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            max-width: 900px;
+            margin: 0 auto 80px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        .compliance-box::before {
+            content: "LEGAL NOTICE";
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            background: var(--bg-color);
+            padding: 0 15px;
             font-family: 'Orbitron';
-        }
-
-        .term-line { color: var(--text-muted); margin-bottom: 5px; }
-        .term-cmd { color: var(--accent); }
-        .term-success { color: #00ff88; }
-        .blink { animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* --- USE CASES --- */
-        .use-cases {
-            padding: 60px 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .uc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        .uc-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-left: 3px solid var(--accent);
-        }
-        .uc-title { font-family: 'Orbitron'; color: #fff; margin-bottom: 10px; font-size: 1.1rem; }
-        .uc-text { font-size: 0.9rem; color: var(--text-muted); }
-
-        /* --- COMPLIANCE --- */
-        .compliance {
-            text-align: center;
-            padding: 60px 5%;
-            background: rgba(255,255,255,0.02);
-            margin-top: 50px;
-            border-top: 1px solid var(--border);
-        }
-        .compliance-text {
-            max-width: 800px;
-            margin: 0 auto;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            padding: 40px 5%;
-            text-align: center;
             font-size: 0.8rem;
-            color: #475569;
-            border-top: 1px solid var(--border);
+            color: var(--accent);
+            letter-spacing: 2px;
         }
-        footer a { color: #64748b; text-decoration: none; transition: color 0.3s; cursor: pointer; }
-        footer a:hover { color: var(--accent); }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        .legal-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.8rem;
+            color: #444;
+        }
+
+        @media (max-width: 900px) {
+            .demo-section { grid-template-columns: 1fr; }
             h1 { font-size: 2.5rem; }
-            .tech-section { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
+    <div class="cyber-grid"></div>
 
     <header>
         <div class="logo">B2B<span>SCOUT</span></div>
-        <a onclick="openMail()" class="action-btn small-btn">CONTACT SALES</a>
+        <a onclick="openMail()" class="btn">Richiedi Accesso</a>
     </header>
 
     <section class="hero">
-        <div style="font-family: 'Orbitron'; color: var(--accent); margin-bottom: 20px; letter-spacing: 2px;">MARKET INTELLIGENCE SYSTEM</div>
+        <div class="tagline">MARKET INTELLIGENCE V.2.0</div>
         <h1>Dati B2B in Tempo Reale.<br>Filtrati dall'AI.</h1>
         <p class="subtitle">
-            Smetti di comprare liste statiche e vecchie. <br>
-            Accedi a un flusso dati in tempo reale, estratto dai siti web aziendali e validato da algoritmi semantici.
+            I database tradizionali sono cimiteri di dati. Noi scansioniamo il web in tempo reale.
+            Trova clienti attivi, validati semanticamente e pronti al business.
         </p>
-        
-        <a onclick="openMail()" class="action-btn">RICHIEDI ACCESSO (WAITLIST)</a>
-        
+        <a onclick="openMail()" class="btn">Parla con un Analista</a>
     </section>
 
-    <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 80px; flex-wrap: wrap;">
-        <div style="text-align: center;">
-            <div style="font-family: 'Orbitron'; font-size: 2rem; color: #fff;">4,200+</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">DAILY SCANS</div>
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-value" style="color: var(--accent)">Llama 3</div>
+            <div class="stat-label">AI Validation Engine</div>
         </div>
-        <div style="text-align: center;">
-            <div style="font-family: 'Orbitron'; font-size: 2rem; color: var(--accent);">98%</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">VALIDATION RATE</div>
+        <div class="stat-card">
+            <div class="stat-value">99.8%</div>
+            <div class="stat-label">OSINT Accuracy</div>
         </div>
-        <div style="text-align: center;">
-            <div style="font-family: 'Orbitron'; font-size: 2rem; color: #fff;">Llama 3.1</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">AI ENGINE</div>
+        <div class="stat-card">
+            <div class="stat-value">Zero</div>
+            <div class="stat-label">Dati Personali</div>
         </div>
     </div>
 
-    <section class="tech-section">
-        <div>
-            <h2 style="font-family: 'Orbitron'; font-size: 2rem; color: #fff; margin-bottom: 20px;">Non è solo Scraping.<br>È Comprensione.</h2>
+    <section class="demo-section">
+        <div class="text-content">
+            <h2 style="font-family: 'Orbitron'; font-size: 2rem; margin-bottom: 20px; color: #fff;">Non compriamo liste.<br>Le costruiamo.</h2>
             <p style="color: var(--text-muted); margin-bottom: 20px;">
-                I database tradizionali usano codici ATECO obsoleti. Se cerchi un target specifico, ti ritrovi con migliaia di risultati irrilevanti e fuori target.
+                La maggior parte dei venditori di dati ti offre file Excel vecchi di 2 anni.
             </p>
-            <p style="color: var(--text-muted);">
-                <strong>B2B Scout usa l'IA Generativa</strong> per leggere il sito web di ogni azienda e capire esattamente cosa fa, in tempo reale.
-                Cerchi aziende con specifiche certificazioni, tecnologie o capacità produttive? 
-                Il nostro algoritmo le trova per te.
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <strong>B2B Scout agisce su mandato:</strong> il nostro bot visita i siti web delle aziende in tempo reale, legge il contenuto con l'AI per capire se sono *davvero* in target, ed estrae solo contatti business verificati.
             </p>
+            <ul style="list-style: none; color: var(--text-main);">
+                <li style="margin-bottom: 10px;">✅ <strong>Filtro Semantico:</strong> L'AI distingue una "Pizzeria" da un "Produttore di forni".</li>
+                <li style="margin-bottom: 10px;">✅ <strong>GDPR Native:</strong> Scarto automatico delle mail personali.</li>
+            </ul>
         </div>
 
-        <div class="terminal-window">
-            <div class="term-line"><span class="term-cmd">></span> TARGET: MANIFATTURA_NORD_ITALIA</div>
-            <div class="term-line"><span class="term-cmd">></span> STATUS: SCANNING 2,840 DOMAINS...</div>
-            <div class="term-line"><span class="term-cmd">></span> FILTER: "ISO 9001" AND "STAMPA 3D"</div>
-            <div class="term-line">... Analyzing content (Semantic Check) ...</div>
-            <div class="term-line"><span class="term-success">[MATCH]</span> Precision Tech SRL ("Produzione componenti aerospaziali certificati")</div>
-            <div class="term-line"><span class="term-cmd" style="color: #ff3333;">[DROP]</span> General Store ("Rivendita cancelleria e ufficio")</div>
-            <div class="term-line"><span class="term-cmd">></span> FOUND: 87 HIGH-VALUE LEADS</div>
-            <div class="term-line"><span class="term-cmd blink">_</span></div>
-        </div>
-    </section>
-
-    <section class="use-cases">
-        <h3 style="font-family: 'Orbitron'; text-align: center; color: #fff; margin-bottom: 40px;">PER CHI È B2B SCOUT?</h3>
-        <div class="uc-grid">
-            <div class="uc-card">
-                <div class="uc-title">AGENZIE MARKETING</div>
-                <p class="uc-text">Alimenta le campagne dei tuoi clienti con dati freschi. Offri servizi di Lead Generation basati su dati reali, non su elenchi telefonici morti.</p>
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                <div style="margin-left: auto; color: #555; font-size: 0.7rem;">live_scan.sh</div>
             </div>
-            <div class="uc-card">
-                <div class="uc-title">FORNITORI B2B</div>
-                <p class="uc-text">Vendi prodotti o servizi ad altre aziende? Ti diciamo noi quali sono attive, quali tecnologie utilizzano e se sono realmente in target con la tua offerta.</p>
-            </div>
-            <div class="uc-card">
-                <div class="uc-title">SOFTWARE VENDORS</div>
-                <p class="uc-text">Trova le aziende tecnologicamente pronte. Il nostro bot rileva se usano già gestionali o sistemi di tracking.</p>
+            <div class="terminal-body" id="term-logs">
+                <div class="log-item"><span class="cmd">></span> INIT SCAN: SETTORE_LOGISTICA [VR]</div>
+                <div class="log-item"><span class="cmd">></span> TARGETS FOUND: 1,420 URLS</div>
+                <div class="log-item">... Analyzing content (Semantic Check) ...</div>
             </div>
         </div>
     </section>
 
-    <section class="compliance">
-        <h4 style="font-family: 'Orbitron'; margin-bottom: 20px; color: #fff;">LEGAL & COMPLIANCE</h4>
-        <div class="compliance-text">
-            B2B Scout è uno strumento di intelligence che aggrega esclusivamente <strong>dati pubblici (OSINT)</strong> presenti sui siti web aziendali.
-            <br><br>
-            Non effettuiamo intrusioni, non vendiamo dati di privati consumatori e operiamo nel rispetto delle normative B2B. 
-            Il Cliente finale agisce come Titolare autonomo del trattamento.
+    <!-- LEGAL SHIELD SECTION -->
+    <section class="compliance-box">
+        <div class="legal-text">
+            <strong style="color: #fff; display: block; margin-bottom: 10px;">CONFORMITÀ E TRATTAMENTO DATI</strong>
+            <p>
+                B2B Scout non opera come Data Broker di liste precostituite. 
+                Il servizio è fornito esclusivamente in modalità <strong>"On-Demand OSINT"</strong> (Open Source Intelligence).
+                Il software effettua ricerche mirate su fonti pubblicamente accessibili (Siti Web Aziendali, Registri Pubblici) su specifico mandato del cliente B2B.
+            </p>
+            <br>
+            <p>
+                Tutti i dati forniti sono sottoposti a un rigoroso processo di <strong>Sanificazione GDPR</strong>: 
+                vengono automaticamente esclusi indirizzi email personali, cellulari privati e dati non pertinenti all'attività economica.
+            </p>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2026 B2B Scout Intelligence System.</p>
-        <p style="margin-top: 10px;">Contact: <a onclick="openMail()">Support Team</a></p>
-        <p style="margin-top: 5px; font-size: 0.7rem;">Powered by <a href="https://system-unlock.net" target="_blank" style="color: var(--accent);">System-Unlock Network</a></p>
+        <p>&copy; 2026 B2B Scout. Powered by <span style="color: var(--accent)">DeltaBot Engine</span>.</p>
+        <p style="margin-top: 10px; opacity: 0.5;">Partita IVA: Su richiesta | Sede: Verona, IT</p>
     </footer>
 
     <script>
-        // --- SCRIPT PROTEZIONE EMAIL ---
-        // Nessun indirizzo email è visibile nel codice sorgente.
-        
+        // --- TERMINAL ANIMATION ---
+        const logs = [
+            { text: "Zaninelli Trasporti SRL... [ANALYZING]", type: "info" },
+            { text: "MATCH: 'Logistica', 'Flotta', 'Verona'", type: "success" },
+            { text: ">> LEAD ACQUIRED: info@zaninellitrasporti.it", type: "success" },
+            { text: "Trattoria Al Pomodoro... [ANALYZING]", type: "info" },
+            { text: "DROP: Sector Mismatch (Ristorazione)", type: "error" },
+            { text: "Mario Rossi Blog... [ANALYZING]", type: "info" },
+            { text: "DROP: GDPR Risk (Personal Email)", type: "error" },
+            { text: "Logistica Veneta Group... [ANALYZING]", type: "info" },
+            { text: "MATCH: 'Spedizioni', 'Magazzino'", type: "success" }
+        ];
+
+        const termBody = document.getElementById('term-logs');
+        let logIndex = 0;
+
+        function addLog() {
+            if (logIndex >= logs.length) logIndex = 0;
+            const log = logs[logIndex];
+            
+            const div = document.createElement('div');
+            div.className = 'log-item';
+            
+            if (log.type === 'success') div.innerHTML = `<span class="log-success">✓ ${log.text}</span>`;
+            else if (log.type === 'error') div.className += ' log-error';
+            else div.innerHTML = `<span class="cmd">></span> ${log.text}`;
+            
+            div.innerText = div.innerText || log.text; // Fallback
+            
+            termBody.appendChild(div);
+            termBody.scrollTop = termBody.scrollHeight;
+            
+            // Keep DOM clean
+            if (termBody.children.length > 8) termBody.removeChild(termBody.children[0]);
+            
+            logIndex++;
+            setTimeout(addLog, Math.random() * 800 + 400);
+        }
+
+        setTimeout(addLog, 1000);
+
+        // --- EMAIL OBFUSCATION ---
         function openMail() {
-            // Ricostruzione dinamica
-            const part1 = 'deltamk';
-            const part2 = 'protonmail';
-            const part3 = 'com';
-            
-            const email = part1 + '@' + part2 + '.' + part3;
-            
-            const subject = "Richiesta Accesso Intelligence B2B";
-            const body = "Salve,\nvorrei ricevere un report di esempio sui target nella mia zona.\n\nIl mio settore è: ...\n";
-            
-            // Apertura client di posta
-            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const user = 'deltamk';
+            const domain = 'protonmail.com';
+            const subject = "Richiesta Accesso OSINT";
+            const body = "Ciao, vorrei maggiori informazioni sul servizio di ricerca target...";
+            window.location.href = `mailto:${user}@${domain}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     </script>
 
 </body>
 </html>
+
