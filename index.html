@@ -58,6 +58,7 @@
             letter-spacing: 2px; color: #fff; text-shadow: 0 0 20px var(--accent-glow);
             position: relative;
             display: inline-block;
+            text-decoration: none;
         }
         .logo:hover {
             animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
@@ -262,18 +263,18 @@
     <div class="cyber-grid"></div>
 
     <header>
-        <div class="logo">B2B<span>SCOUT</span></div>
-        <a onclick="openMail()" class="btn">Richiedi Accesso</a>
+        <a href="#" class="logo">B2B<span>SCOUT</span></a>
+        <a onclick="openMail()" class="btn">Richiedi Analisi</a>
     </header>
 
     <section class="hero">
-        <div class="tagline">MARKET INTELLIGENCE V.2.0</div>
+        <div class="tagline">AI-DRIVEN MARKET INTELLIGENCE</div>
         <h1>Dati B2B in Tempo Reale.<br>Filtrati dall'AI.</h1>
         <p class="subtitle">
             I database tradizionali sono cimiteri di dati. Noi scansioniamo il web in tempo reale.
             Trova clienti attivi, validati semanticamente e pronti al business.
         </p>
-        <a onclick="openMail()" class="btn">Parla con un Analista</a>
+        <a onclick="openMail()" class="btn">Contatta un Analista</a>
     </section>
 
     <div class="stats-container">
@@ -301,15 +302,15 @@
                 <strong>B2B Scout agisce su mandato:</strong> il nostro bot visita i siti web delle aziende in tempo reale, legge il contenuto con l'AI per capire se sono *davvero* in target, ed estrae solo contatti business verificati.
             </p>
             <ul style="list-style: none; color: var(--text-main);">
-                <li style="margin-bottom: 10px;">✅ <strong>Filtro Semantico:</strong> L'AI distingue una "Pizzeria" da un "Produttore di forni".</li>
-                <li style="margin-bottom: 10px;">✅ <strong>GDPR Native:</strong> Scarto automatico delle mail personali.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success); margin-right: 10px;"></i> <strong>Arricchimento Dati:</strong> P.IVA, Social, Telefoni.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success); margin-right: 10px;"></i> <strong>Zero Spam:</strong> Filtriamo solo contatti decisionali pubblici.</li>
             </ul>
         </div>
 
         <div class="terminal">
             <div class="terminal-header">
                 <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-                <div style="margin-left: auto; color: #555; font-size: 0.7rem;">live_scan.sh</div>
+                <div style="margin-left: auto; color: #555; font-size: 0.7rem;">live_engine.log</div>
             </div>
             <div class="terminal-body" id="term-logs">
                 <div class="log-item"><span class="cmd">></span> INIT SCAN: SETTORE_LOGISTICA [VR]</div>
@@ -324,8 +325,9 @@
             <strong style="color: #fff; display: block; margin-bottom: 10px;">NOTE LEGALI & DISCLAIMER</strong>
             <p>
                 Questa pagina è una <strong>Tech Demo / Portfolio Project</strong> creata a scopo dimostrativo.
-                Non è un servizio commerciale attivo. Nessun dato reale viene salvato, trattato o venduto tramite questa interfaccia.
-                Il pulsante "Richiedi Accesso" apre semplicemente il tuo client di posta predefinito.
+                Non è un servizio commerciale attivo aperto al pubblico generalista.
+                Nessun dato reale viene salvato tramite questa interfaccia pubblica.
+                Il servizio di Market Intelligence è fornito esclusivamente B2B su mandato specifico.
             </p>
         </div>
     </section>
