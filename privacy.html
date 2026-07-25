@@ -3,98 +3,405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B2B Scout | Privacy Policy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>B2B Scout | Privacy Policy & GDPR Compliance v6.0</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23050505%22/><text x=%2250%22 y=%2268%22 font-size=%2265%22 text-anchor=%22middle%22 fill=%22%2300ff88%22 font-family=%22monospace%22 font-weight=%22900%22>Δ</text></svg>">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --bg-color: #030405;
-            --accent: #00f3ff;
+            --bg-obsidian: #050505;
+            --bg-card: rgba(10, 10, 12, 0.9);
+            --accent-green: #00ff88;
+            --accent-green-glow: rgba(0, 255, 136, 0.3);
+            --accent-purple: #bd00ff;
+            --accent-purple-glow: rgba(189, 0, 255, 0.3);
             --text-main: #e2e8f0;
-            --text-muted: #64748b;
+            --text-muted: #888888;
+            --border-dark: #333333;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Custom Scrollbars */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #333 #000;
+        }
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: #000; border-left: 1px solid var(--border-dark); }
+        ::-webkit-scrollbar-thumb { background: #222; border: 1px solid #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green-glow); }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--bg-obsidian);
             color: var(--text-main);
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
+            line-height: 1.7;
+            padding-bottom: 50px;
+            min-height: 100vh;
+        }
+
+        .matrix-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.08) 0%, rgba(5,5,5,0.98) 85%);
+            z-index: -1;
+        }
+
+        /* Top Header Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(5, 5, 5, 0.9);
+            border-bottom: 2px solid var(--accent-green);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            background: #111;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 6px 14px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-nav:hover {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-green-glow);
         }
 
         .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background: rgba(20, 30, 40, 0.6);
-            padding: 40px;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 8px;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
         }
 
-        h1 {
-            font-family: 'Orbitron';
-            color: var(--accent);
-            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            font-family: 'Inter';
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
             color: #fff;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
         }
 
-        p { margin-bottom: 15px; color: var(--text-muted); }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: var(--accent);
-            text-decoration: none;
-            font-family: 'JetBrains Mono';
-            font-size: 0.9rem;
+        .update-tag {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 25px;
+            display: block;
         }
-        .back-link:hover { text-decoration: underline; }
+
+        /* Telemetry Cards Grid */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .telemetry-box {
+            background: #000;
+            border: 1px solid var(--border-dark);
+            padding: 18px 15px;
+            text-align: center;
+            border-top: 2px solid var(--accent-green);
+        }
+
+        .telemetry-box.purple { border-top-color: var(--accent-purple); }
+
+        .telemetry-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: var(--accent-green);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .telemetry-box.purple .telemetry-val { color: var(--accent-purple); }
+
+        .telemetry-lbl {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Collapsible Legal Modules */
+        .legal-module {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dark);
+            margin-bottom: 18px;
+            transition: border-color 0.25s;
+        }
+
+        .legal-module.active {
+            border-color: var(--accent-green);
+        }
+
+        .module-header {
+            padding: 18px 22px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+            user-select: none;
+        }
+
+        .module-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-status {
+            font-size: 0.7rem;
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            padding: 2px 8px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .module-body {
+            padding: 22px;
+            border-top: 1px solid var(--border-dark);
+            display: none;
+            color: #ccc;
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .module-body.show { display: block; }
+
+        .code-block {
+            background: #000;
+            border: 1px solid #222;
+            border-left: 3px solid var(--accent-green);
+            padding: 12px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            margin: 15px 0;
+        }
+
+        .code-block.purple {
+            border-left-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+
+        /* Interactive Opt-Out Generator Widget */
+        .optout-widget {
+            background: #000;
+            border: 1px solid var(--accent-purple);
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 0 25px var(--accent-purple-glow);
+            position: relative;
+        }
+
+        .optout-widget::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--accent-purple);
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+
+        .optout-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-purple);
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+        }
+
+        .optout-desc {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .optout-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .optout-form input {
+            flex: 1;
+            min-width: 250px;
+            background: #050505;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 10px 14px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        .optout-form input:focus {
+            border-color: var(--accent-purple);
+        }
     </style>
 </head>
 <body>
+
+    <div class="matrix-bg"></div>
+
+    <header>
+        <div class="header-title">
+            <i class="fas fa-shield-alt"></i>
+            <span>B2B_SCOUT // PRIVACY_NODE_v6.0</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="window.print()" class="btn-nav"><i class="fas fa-print"></i> STAMPA / PDF</button>
+            <a href="index.html" class="btn-nav"><i class="fas fa-arrow-left"></i> TORNA ALLA HOME</a>
+        </div>
+    </header>
+
     <div class="container">
-        <h1>PRIVACY POLICY</h1>
-        <p><em>Ultimo aggiornamento: 18 Gennaio 2026</em></p>
-        
-        <h2>1. Ambito di Applicazione</h2>
-        <p>Questa informativa distingue tra i dati di navigazione del presente sito (Tech Demo) e i dati trattati nell'ambito del servizio di Market Intelligence erogato ai clienti.</p>
-        <p><strong>Sito Web:</strong> Questa interfaccia pubblica non salva dati di ricerca né profila i visitatori. Nessun dato inserito nella "console" dimostrativa viene memorizzato.</p>
+        <h1 class="hero-title">PRIVACY POLICY & GDPR COMPLIANCE</h1>
+        <span class="update-tag"><i class="fas fa-microchip"></i> Protocollo OSINT Market Intelligence v6.0 | Aggiornato Luglio 2026</span>
 
-        <h2>2. Il Servizio di Intelligence (Compliance GDPR)</h2>
-        <p>Nell'erogazione del servizio di ricerca B2B su mandato, operiamo nel rigoroso rispetto del GDPR:</p>
-        <ul>
-            <li><strong>Base Giuridica:</strong> Legittimo Interesse (Art. 6.1.f GDPR) a favorire le comunicazioni commerciali tra imprese.</li>
-            <li><strong>Oggetto del Trattamento:</strong> Esclusivamente dati di <em>persone giuridiche</em>, enti e contatti business pubblici (B2B).</li>
-            <li><strong>Esclusione:</strong> I nostri algoritmi filtrano ed escludono i dati personali di privati consumatori, dati sensibili o giudiziari.</li>
-        </ul>
+        <!-- TELEMETRY BADGES -->
+        <div class="telemetry-grid">
+            <div class="telemetry-box">
+                <div class="telemetry-val">100% B2B ONLY</div>
+                <div class="telemetry-lbl">Esclusione Consumatori</div>
+            </div>
+            <div class="telemetry-box purple">
+                <div class="telemetry-val">ART. 6.1.f</div>
+                <div class="telemetry-lbl">Legittimo Interesse GDPR</div>
+            </div>
+            <div class="telemetry-box">
+                <div class="telemetry-val">ZERO DATA RISK</div>
+                <div class="telemetry-lbl">Nessuna Profilazione</div>
+            </div>
+            <div class="telemetry-box purple">
+                <div class="telemetry-val">ANTI-DIRECTORY</div>
+                <div class="telemetry-lbl">Filtro Aggregatori</div>
+            </div>
+        </div>
 
-        <h2>3. Tipologia di Dati Trattati</h2>
-        <p>I dati raccolti dai nostri sistemi (solo da fonti pubbliche accessibili) includono: ragione sociale, sito web, indirizzo sede, email aziendali generiche (es. info@) o professionali pubbliche, e numeri di telefono aziendali.</p>
+        <!-- MODULE 01 -->
+        <div class="legal-module active">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <i class="fas fa-terminal" style="color: var(--accent-green);"></i>
+                    MODULE 01 // AMBITO DI APPLICAZIONE & TECH DEMO
+                </div>
+                <span class="module-status">VERIFIED</span>
+            </div>
+            <div class="module-body show">
+                <p>Questa informativa distingue chiaramente tra i dati di navigazione di questa piattaforma pubblica dimostrativa (Tech Demo) e i dati trattati nell'ambito del servizio di Market Intelligence B2B su mandato.</p>
+                <div class="code-block">
+                    PROT_SYS_01: PUBLIC_INTERFACE -> NO_DATABASE_LOGGING<br>
+                    Nessun dato di ricerca immesso nell'interfaccia pubblica viene conservato o ceduto a terzi.
+                </div>
+            </div>
+        </div>
 
-        <h2>4. Finalità del Trattamento</h2>
-        <p>I dati vengono trattati per finalità di Market Intelligence, analisi di mercato e creazione di contatti commerciali B2B qualificati. Il trattamento si basa sul legittimo interesse di favorire le relazioni economiche tra imprese.</p>
+        <!-- MODULE 02 -->
+        <div class="legal-module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <i class="fas fa-balance-scale" style="color: var(--accent-purple);"></i>
+                    MODULE 02 // COMPLIANCE GDPR & BASE GIURIDICA
+                </div>
+                <span class="module-status" style="color: var(--accent-purple); border-color: var(--accent-purple);">ART. 6.1.f</span>
+            </div>
+            <div class="module-body">
+                <p>Nell'erogazione dei servizi di ricerca B2B su mandato professionale, operiamo nel pieno rispetto del Regolamento UE 2016/679 (GDPR):</p>
+                <div class="code-block purple">
+                    GDPR_LEGAL_BASIS: Legittimo Interesse (Art. 6.1.f GDPR)<br>
+                    Trattamento limitato a contatti commerciali pubblici di persone giuridiche ed enti B2B.
+                </div>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Esclusione Consumatori:</strong> I nostri algoritmi escludono rigorosamente dati personali di persone fisiche o privati consumatori.</li>
+                    <li><strong>Fonti OSINT:</strong> I dati provengono esclusivamente da fonti web pubbliche e canali ufficiali aziendali.</li>
+                </ul>
+            </div>
+        </div>
 
-        <h2>3. Esclusione di Dati Personali Privati</h2>
-        <p>Il nostro sistema utilizza filtri avanzati per escludere il trattamento di dati personali riferibili a privati cittadini. Non raccogliamo dati sensibili, giudiziari o sanitari.</p>
+        <!-- MODULE 03 -->
+        <div class="legal-module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <i class="fas fa-user-shield" style="color: var(--accent-green);"></i>
+                    MODULE 03 // DIRITTI DEGLI INTERESSATI & OPT-OUT
+                </div>
+                <span class="module-status">ACTIVE SAFEGUARD</span>
+            </div>
+            <div class="module-body">
+                <p>Garantiamo a ciascuna azienda o rappresentante legale il diritto universale di cancellazione o opposizione al trattamento (Opt-out) in qualsiasi momento.</p>
+                <p>Titolare del trattamento: <strong>B2B Scout Core Team</strong>. Contatto diretto per le richieste di rimozione: <a href="mailto:deltamk@protonmail.com" style="color: var(--accent-green);">deltamk@protonmail.com</a>.</p>
+            </div>
+        </div>
 
-        <h2>4. Origine dei Dati</h2>
-        <p>Tutte le informazioni sono ottenute da fonti pubblicamente accessibili (Open Source Intelligence), nel pieno rispetto del principio di trasparenza.</p>
+        <!-- INTERACTIVE OPT-OUT GENERATOR WIDGET -->
+        <div class="optout-widget">
+            <h3 class="optout-title"><i class="fas fa-bolt"></i> WIDGET INTERATTIVO // GENERATORE OPT-OUT RAPIDO</h3>
+            <p class="optout-desc">Sei un'azienda e desideri verificare o richiedere la rimozione immediata dei tuoi contatti B2B dal nostro motore OSINT? Inserisci il nome della tua azienda ed e-mail per generare la richiesta formale pre-compilata.</p>
+            <div class="optout-form">
+                <input type="text" id="optout-company" placeholder="Nome Azienda o P.IVA...">
+                <input type="email" id="optout-email" placeholder="E-mail Aziendale...">
+                <button onclick="generateOptOutMail()" class="btn-nav" style="border-color: var(--accent-purple); color: var(--accent-purple); padding: 10px 20px;">
+                    <i class="fas fa-paper-plane"></i> GENERI OPT-OUT MAIL
+                </button>
+            </div>
+        </div>
 
-        <h2>5. Diritti degli Interessati e Contatti</h2>
-        <p>Qualsiasi azienda o professionista può richiedere in qualsiasi momento la rimozione dei propri dati dai nostri archivi o opporsi al trattamento (Opt-out).</p>
-        <p>Per esercitare questi diritti, contattare il Titolare del Trattamento:</p>
-        <p><strong>Email:</strong> <a href="mailto:deltamk@protonmail.com" style="color: var(--accent);">deltamk@protonmail.com</a></p>
-
-        <a href="index.html" class="back-link">&lt; TORNA ALLA HOME</a>
+        <div style="margin-top: 40px; text-align: center;">
+            <a href="index.html" class="btn-nav"><i class="fas fa-arrow-left"></i> TORNA ALLA PAGINA PRINCIPALE</a>
+        </div>
     </div>
+
+    <script>
+        function toggleModule(headerEl) {
+            const moduleEl = headerEl.parentElement;
+            const bodyEl = moduleEl.querySelector('.module-body');
+            
+            const isShown = bodyEl.classList.contains('show');
+            if (isShown) {
+                bodyEl.classList.remove('show');
+                moduleEl.classList.remove('active');
+            } else {
+                bodyEl.classList.add('show');
+                moduleEl.classList.add('active');
+            }
+        }
+
+        function generateOptOutMail() {
+            const company = document.getElementById('optout-company').value || 'Mia Azienda';
+            const email = document.getElementById('optout-email').value || 'info@miaazienda.it';
+            
+            const subject = `RICHIESTA OPT-OUT / RIMOZIONE DATI: ${company}`;
+            const body = `Spett.le B2B Scout Team,\n\nRichiedo la cancellazione formale dei contatti B2B riferiti a "${company}" (${email}) dal vostro sistema di intelligence OSINT.\n\nDistinti saluti,\n${company}`;
+            
+            window.location.href = `mailto:deltamk@protonmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+    </script>
 </body>
 </html>

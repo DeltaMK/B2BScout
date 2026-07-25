@@ -2,416 +2,1159 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B2B Scout | OSINT Market Intelligence</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>B2B Scout | OSINT Market Intelligence & AI Lead Generation v6.0</title>
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2305070a%22/><text x=%2250%22 y=%2270%22 font-size=%2270%22 text-anchor=%22middle%22 fill=%22%2300f3ff%22 font-family=%22sans-serif%22 font-weight=%22900%22>B</text></svg>">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23050505%22/><text x=%2250%22 y=%2268%22 font-size=%2265%22 text-anchor=%22middle%22 fill=%22%2300ff88%22 font-family=%22monospace%22 font-weight=%22900%22>Δ</text></svg>">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet GIS Map CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <style>
         :root {
-            --bg-color: #030405;
-            --card-bg: rgba(20, 30, 40, 0.6);
-            --accent: #00f3ff;
-            --accent-glow: rgba(0, 243, 255, 0.2);
+            --bg-obsidian: #050505;
+            --bg-card: rgba(10, 10, 12, 0.85);
+            --accent-green: #00ff88;
+            --accent-green-glow: rgba(0, 255, 136, 0.3);
+            --accent-purple: #bd00ff;
+            --accent-purple-glow: rgba(189, 0, 255, 0.3);
+            --accent-yellow: #ffbd2e;
+            --accent-red: #ff3333;
             --text-main: #e2e8f0;
-            --text-muted: #64748b;
-            --border: #1e293b;
-            --success: #00ff9d;
-            --danger: #ff3366;
+            --text-muted: #888888;
+            --border-dark: #333333;
+            --border-glow: #00ff88;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* Custom Scrollbar (Delta Bot Cyberpunk Style) */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #333 #000;
+        }
+
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+            border-left: 1px solid var(--border-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green-glow);
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--bg-obsidian);
+            color: var(--accent-green);
+            min-height: 100vh;
+            width: 100vw;
             overflow-x: hidden;
+            position: relative;
         }
 
-        .cyber-grid {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: 
-                linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
-            background-size: 40px 40px;
+        /* CRT Scanline & Matrix Overlay */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+            z-index: 999;
+            background-size: 100% 3px, 4px 100%;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .matrix-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at center, rgba(0, 255, 136, 0.12) 0%, rgba(5,5,5,0.98) 85%),
+                linear-gradient(0deg, rgba(0,0,0,0.2) 50%, rgba(0, 40, 20, 0.1) 50%);
+            background-size: 100% 100%, 100% 4px;
             z-index: -1;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
+        /* Layout Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header App Bar */
         header {
-            padding: 20px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 15px 20px;
+            background: rgba(5, 5, 5, 0.85);
+            border: 1px solid var(--border-dark);
+            border-bottom: 2px solid var(--accent-green);
             backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(3, 4, 5, 0.8);
-        }
-        
-        .logo { 
-            font-family: 'Orbitron'; font-weight: 900; font-size: 1.4rem; 
-            letter-spacing: 2px; color: #fff; text-shadow: 0 0 20px var(--accent-glow);
-            position: relative;
-            display: inline-block;
-            text-decoration: none;
-        }
-        .logo:hover {
-            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-            color: var(--accent);
-        }
-        .logo span { color: var(--accent); }
-        
-        @keyframes glitch {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
         }
 
-        .btn {
-            background: transparent;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 12px 30px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            text-transform: uppercase;
+        .retro-nick {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px var(--accent-green-glow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .logo-badge {
+            color: var(--accent-green);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .version-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+
+        .author-badge {
+            color: var(--accent-red);
+            text-shadow: 0 0 12px rgba(255, 51, 51, 0.8);
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid var(--accent-green);
+            padding: 6px 14px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent-green);
             letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn:hover {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 30px var(--accent-glow);
         }
 
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: blinkDot 1.5s infinite;
+        }
+
+        @keyframes blinkDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+
+        .btn-action {
+            background: #111;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .btn-action:hover {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-green-glow);
+        }
+
+        .btn-purple {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+        .btn-purple:hover {
+            background: var(--accent-purple);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent-purple-glow);
+        }
+
+        /* Hero Section */
         .hero {
-            padding: 100px 5% 60px;
             text-align: center;
-            max-width: 1000px;
+            padding: 40px 20px 60px;
+            max-width: 950px;
             margin: 0 auto;
         }
 
-        .tagline {
-            font-family: 'JetBrains Mono'; color: var(--accent); 
-            font-size: 0.8rem; margin-bottom: 20px; letter-spacing: 2px;
-            display: inline-block; padding: 5px 15px;
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            background: rgba(0, 243, 255, 0.05);
+        .hero-tag {
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+            border: 1px solid var(--accent-purple);
+            background: rgba(189, 0, 255, 0.08);
+            padding: 6px 16px;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            box-shadow: 0 0 15px var(--accent-purple-glow);
         }
 
-        h1 {
-            font-family: 'Orbitron'; font-size: clamp(2.5rem, 5vw, 4.5rem);
-            line-height: 1.1; margin-bottom: 30px;
-            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1.15;
+            color: #fff;
+            margin-bottom: 25px;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
         }
 
-        .subtitle {
-            font-size: 1.1rem; color: var(--text-muted);
-            max-width: 650px; margin: 0 auto 50px;
+        .hero h1 span.highlight-green {
+            color: var(--accent-green);
+            text-shadow: 0 0 20px var(--accent-green-glow);
         }
 
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        .hero h1 span.highlight-purple {
+            color: var(--accent-purple);
+            text-shadow: 0 0 20px var(--accent-purple-glow);
+        }
+
+        .hero-sub {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            max-width: 780px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-sub strong { color: var(--accent-green); }
+
+        .hero-cta {
+            display: flex;
+            justify-content: center;
             gap: 20px;
-            max-width: 1000px;
-            margin: 0 auto 100px;
-            padding: 0 5%;
+            flex-wrap: wrap;
         }
-        
-        .stat-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 25px;
-            text-align: center;
-            border-radius: 8px;
-        }
-        .stat-value { font-family: 'Orbitron'; font-size: 2rem; color: #fff; margin-bottom: 5px; }
-        .stat-label { font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
 
-        .demo-section {
+        /* Showcase Frame */
+        .console-frame {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dark);
+            backdrop-filter: blur(8px);
+            margin-bottom: 60px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        }
+
+        .tabs-header {
+            display: flex;
+            background: #000;
+            border-bottom: 1px solid var(--border-dark);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: rgba(0,0,0,0.5);
+            border: none;
+            border-right: 1px solid var(--border-dark);
+            color: var(--text-muted);
+            padding: 12px 22px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover { color: var(--accent-green); }
+        
+        .tab-btn.active {
+            color: var(--accent-green);
+            background: rgba(5, 5, 5, 0.9);
+            border-bottom: 2px solid var(--accent-green);
+            box-shadow: inset 0 3px 0 var(--accent-green);
+        }
+
+        .tab-btn.active-purple {
+            color: var(--accent-purple);
+            border-bottom: 2px solid var(--accent-purple);
+            box-shadow: inset 0 3px 0 var(--accent-purple);
+        }
+
+        .console-body {
+            padding: 25px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+
+        .controls-grid {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 60px;
-            max-width: 1200px;
-            margin: 0 auto 100px;
-            padding: 0 5%;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        input, select {
+            background: #000;
+            border: 1px solid var(--border-dark);
+            color: var(--accent-green);
+            padding: 10px 12px;
+            width: 100%;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green-glow);
+        }
+
+        /* Terminal Window */
+        .terminal-wrapper {
+            background: #000;
+            border: 1px solid var(--border-dark);
+            display: flex;
+            flex-direction: column;
+            height: 340px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal-top {
+            background: #111;
+            border-bottom: 1px solid var(--border-dark);
+            padding: 8px 14px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .terminal {
-            background: #080a0c;
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            overflow: hidden;
-            position: relative;
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
         }
-        
-        .terminal-header {
-            background: #1a1d21;
-            padding: 10px 15px;
-            display: flex; gap: 8px;
-            border-bottom: 1px solid #333;
-        }
-        .dot { width: 10px; height: 10px; borderRadius: 50%; background: #333; border-radius: 50%; }
-        .dot.r { background: #ff5f56; }
-        .dot.y { background: #ffbd2e; }
-        .dot.g { background: #27c93f; }
 
-        .terminal-body { 
-            padding: 20px; 
-            color: #a9b7c6; 
-            height: 300px; 
-            overflow: hidden; 
-            position: relative;
-            overflow-anchor: none;
+        .dot { width: 9px; height: 9px; border-radius: 50%; }
+        .dot.r { background: var(--accent-red); }
+        .dot.y { background: var(--accent-yellow); }
+        .dot.g { background: var(--accent-green); }
+
+        .terminal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
         }
-        
-        .terminal-body::before {
+
+        .terminal-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: #aaa;
+        }
+
+        .terminal-content::before {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 2px;
-            background: rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-            animation: scan 3s linear infinite;
+            background: rgba(0, 255, 136, 0.4);
+            box-shadow: 0 0 12px var(--accent-green);
+            animation: scanLine 3.5s linear infinite;
             pointer-events: none;
-            z-index: 10;
         }
-        
-        @keyframes scan {
+
+        @keyframes scanLine {
             0% { top: 0; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
             100% { top: 100%; opacity: 0; }
         }
 
-        .terminal-body::after {
-            content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 50px;
-            background: linear-gradient(transparent, #080a0c);
-        }
+        .log-entry { margin-bottom: 4px; }
+        .log-sys { color: var(--accent-green); }
+        .log-purple { color: var(--accent-purple); font-weight: bold; }
+        .log-match { color: var(--accent-green); font-weight: bold; }
+        .log-drop { color: var(--accent-red); opacity: 0.7; }
+        .log-warn { color: var(--accent-yellow); }
 
-        .cmd { color: var(--accent); margin-right: 8px; }
-        .log-item { margin-bottom: 6px; opacity: 0; animation: fadeIn 0.3s forwards; }
-        .log-success { color: var(--success); }
-        .log-error { color: var(--danger); text-decoration: line-through; opacity: 0.6; }
-        
-        @keyframes fadeIn { to { opacity: 1; } }
-
-        .compliance-box {
-            background: rgba(0, 243, 255, 0.03);
-            border: 1px solid rgba(0, 243, 255, 0.1);
-            max-width: 900px;
-            margin: 0 auto 80px;
-            padding: 40px;
-            text-align: center;
+        /* TACTICAL MAP CONTAINER */
+        .map-frame-wrapper {
             position: relative;
-        }
-        .compliance-box::before {
-            content: "TECH DEMO / PORTFOLIO";
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            background: var(--bg-color);
-            padding: 0 15px;
-            font-family: 'Orbitron';
-            font-size: 0.8rem;
-            color: var(--accent);
-            letter-spacing: 2px;
+            height: 480px;
+            width: 100%;
+            background: #050505;
+            border: 1px solid var(--border-dark);
+            overflow: hidden;
         }
 
-        .legal-text {
+        #tactical-map {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: #050505;
+        }
+
+        /* Leaflet Popups Cyber Style */
+        .leaflet-popup-content-wrapper {
+            background: rgba(5, 5, 5, 0.92) !important;
+            border: 1px solid var(--accent-green) !important;
+            border-radius: 0px !important;
+            color: var(--accent-green) !important;
+            box-shadow: 0 0 20px var(--accent-green-glow) !important;
+        }
+        .leaflet-popup-tip {
+            background: #050505 !important;
+            border: 1px solid var(--accent-green) !important;
+        }
+
+        /* Feature Cards Grid */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 12px;
+            letter-spacing: 1.5px;
+        }
+
+        .section-sub {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            max-width: 700px;
+            font-size: 0.95rem;
+            max-width: 600px;
             margin: 0 auto;
         }
 
-        footer {
-            text-align: center;
-            padding: 40px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            font-size: 0.8rem;
-            color: #444;
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 70px;
         }
 
-        @media (max-width: 900px) {
-            .demo-section { grid-template-columns: 1fr; }
-            h1 { font-size: 2.5rem; }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dark);
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--border-dark);
+            transition: background 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+        }
+
+        .feature-card:hover::before {
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        .feature-card.purple-card:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 10px 30px rgba(189, 0, 255, 0.15);
+        }
+
+        .feature-card.purple-card:hover::before {
+            background: var(--accent-purple);
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--accent-green);
+            margin-bottom: 20px;
+        }
+
+        .feature-card.purple-card .feature-icon {
+            color: var(--accent-purple);
+        }
+
+        .feature-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.15rem;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .feature-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* Stats Bar Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 70px;
+        }
+
+        .stat-box {
+            background: #000;
+            border: 1px solid var(--border-dark);
+            padding: 25px 20px;
+            text-align: center;
+            transition: border-color 0.25s;
+        }
+
+        .stat-box:hover {
+            border-color: var(--accent-green);
+        }
+
+        .stat-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-green);
+            text-shadow: 0 0 15px var(--accent-green-glow);
+            margin-bottom: 6px;
+        }
+
+        .stat-val.purple {
+            color: var(--accent-purple);
+            text-shadow: 0 0 15px var(--accent-purple-glow);
+        }
+
+        .stat-lbl {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* Compliance Modal Box */
+        .modal-box-static {
+            background: #050505;
+            border: 1px solid var(--accent-green);
+            padding: 35px 30px;
+            max-width: 900px;
+            margin: 0 auto 70px;
+            text-align: center;
+            box-shadow: 0 0 35px rgba(0, 255, 136, 0.15);
+            position: relative;
+        }
+
+        .modal-box-static::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--accent-green);
+            box-shadow: 0 0 12px var(--accent-green);
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            letter-spacing: 1.5px;
+        }
+
+        .modal-msg {
+            color: var(--text-main);
+            font-size: 0.88rem;
+            line-height: 1.7;
+            max-width: 750px;
+            margin: 0 auto 25px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border-dark);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.8);
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--accent-green);
         }
     </style>
 </head>
 <body>
 
-    <div class="cyber-grid"></div>
+    <div class="matrix-bg"></div>
 
-    <header>
-        <a href="#" class="logo">B2B<span>SCOUT</span></a>
-        <a onclick="openMail()" class="btn">Richiedi Analisi</a>
-    </header>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="retro-nick">
+                <a href="#" class="logo-badge">B2B_SCOUT_OSINT</a>
+                <span class="version-tag">// V.6.0</span>
+                <span class="author-badge">BY (v^•Đĕ£tă_Ðrågøñ•^v)</span>
+            </div>
+            
+            <div class="header-actions">
+                <div class="status-pill">
+                    <span class="pulse-dot"></span>
+                    <span>LIVE ENGINE ONLINE</span>
+                </div>
+                <a onclick="openMail()" class="btn-action">
+                    <i class="fas fa-satellite"></i> RICHIEDI OSINT
+                </a>
+            </div>
+        </header>
 
-    <section class="hero">
-        <div class="tagline">AI-DRIVEN MARKET INTELLIGENCE</div>
-        <h1>Dati B2B in Tempo Reale.<br>Filtrati dall'AI.</h1>
-        <p class="subtitle">
-            I database tradizionali sono cimiteri di dati. Noi scansioniamo il web in tempo reale.
-            Trova clienti attivi, validati semanticamente e pronti al business.
-        </p>
-        <a onclick="openMail()" class="btn">Contatta un Analista</a>
-    </section>
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-tag">AI-DRIVEN MARKET INTELLIGENCE & HYBRID SCANNING</div>
+            <h1>Dati B2B in Tempo Reale.<br><span class="highlight-green">Filtrati dall'AI</span> & <span class="highlight-purple">Validati OSINT</span>.</h1>
+            <p class="hero-sub">
+                I database statici tradizionali sono cimiteri di contatti obsoleti. 
+                <strong>B2B Scout v6.0</strong> naviga il web in tempo reale come un analista umano: scansiona i siti aziendali ufficiali, 
+                valuta la modernità del sito e il settore con <strong>Llama 3.1 & Gemini 1.5</strong> ed estrae solo contatti decisionali attivi.
+            </p>
+            <div class="hero-cta">
+                <a onclick="openMail()" class="btn-action" style="padding: 12px 28px; font-size: 0.85rem;">
+                    <i class="fas fa-paper-plane"></i> RICHIEDI ANALISI TARGET
+                </a>
+                <a href="#demo" class="btn-action btn-purple" style="padding: 12px 28px; font-size: 0.85rem;">
+                    <i class="fas fa-map-marked-alt"></i> VEDI MAPPA & CONSOLE LIVE
+                </a>
+            </div>
+        </section>
 
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-value" style="color: var(--accent)">Llama 3</div>
-            <div class="stat-label">AI Validation Engine</div>
+        <!-- INTERACTIVE SHOWCASE FRAME (CONSOLE + MAP + AI + MAIL) -->
+        <div class="console-frame" id="demo">
+            <div class="tabs-header">
+                <button class="tab-btn active" id="tab-console-btn" onclick="switchConsoleTab('console')">
+                    <i class="fas fa-terminal"></i> CONSOLE LIVE
+                </button>
+                <button class="tab-btn" id="tab-map-btn" onclick="switchConsoleTab('map')">
+                    <i class="fas fa-globe-europe"></i> MAPPA TATTICA ITALIA
+                </button>
+                <button class="tab-btn" id="tab-ai-btn" onclick="switchConsoleTab('ai')">
+                    <i class="fas fa-brain"></i> AI VALIDATION ENGINE
+                </button>
+                <button class="tab-btn" id="tab-postmaster-btn" onclick="switchConsoleTab('postmaster')">
+                    <i class="fas fa-magic"></i> POSTMASTER MAIL BOT
+                </button>
+            </div>
+
+            <div class="console-body">
+                
+                <!-- TAB PANEL 1: CONSOLE LOGS -->
+                <div id="panel-console" class="tab-panel active">
+                    <div class="controls-grid">
+                        <div>
+                            <div class="form-group">
+                                <label><i class="fas fa-map-marker-alt"></i> TARGET AREA (PROVINCIA / REGIONE)</label>
+                                <input type="text" id="demo-provincia" value="Verona (VR), Padova (PD), Veneto">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-filter"></i> SETTORE TARGET</label>
+                                <select id="demo-settore">
+                                    <option value="noleggio mezzi">Noleggio Mezzi & Veicoli Commerciali</option>
+                                    <option value="autonoleggio">Autonoleggio & Flotte</option>
+                                    <option value="autotrasporti">Autotrasporti & Logistica</option>
+                                    <option value="ortofrutta industriale">Ortofrutta Industriale</option>
+                                    <option value="web agency">Web Agency & IT Services</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="form-group">
+                                <label><i class="fas fa-microchip"></i> OPERATION MODE</label>
+                                <select id="demo-mode">
+                                    <option value="full">FULL RUN (Harvest -> Linker -> AI Scanner)</option>
+                                    <option value="resume">AUTO RECOVERY / HYBRID RESUME</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-bolt"></i> STATO BOT CONTROLS</label>
+                                <div style="display: flex; gap: 10px; height: 38px;">
+                                    <button class="btn-action" style="flex: 1;" onclick="restartDemoLogs()">
+                                        <i class="fas fa-play"></i> START DEMO
+                                    </button>
+                                    <button class="btn-action btn-purple" style="flex: 1;" onclick="triggerAIBursts()">
+                                        <i class="fas fa-brain"></i> AI CHECK
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="terminal-wrapper">
+                        <div class="terminal-top">
+                            <div class="terminal-dots">
+                                <div class="dot r"></div>
+                                <div class="dot y"></div>
+                                <div class="dot g"></div>
+                            </div>
+                            <div class="terminal-title">DELTA_BOT_ENGINE_v6.0.log [LIVE FEED]</div>
+                            <div style="font-size: 0.68rem; color: var(--accent-green); font-weight: bold;" id="lead-counter">LEADS: 14</div>
+                        </div>
+                        <div class="terminal-content" id="term-logs">
+                            <div class="log-entry"><span class="log-sys">[SYSTEM] Initializing Delta Bot Engine v6.0...</span></div>
+                            <div class="log-entry"><span class="log-sys">[SYSTEM] Hybrid Scanner Active (Direct Web OSINT Crawling).</span></div>
+                            <div class="log-entry"><span class="log-purple">[AI ENGINE] Llama 3.1 & Gemini 1.5 Flash Connected.</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB PANEL 2: TACTICAL MAP (WAR ROOM) -->
+                <div id="panel-map" class="tab-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-family: 'Orbitron'; color: #fff; font-size: 0.85rem;"><i class="fas fa-map-marked-alt" style="color: var(--accent-green);"></i> TACTICAL MAP • ITALIA GEOLOCALIZZATA</span>
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <span id="map-total-badge" style="color: var(--accent-green); font-size: 0.75rem; font-family: 'Orbitron'; font-weight: bold; background: rgba(0,255,136,0.08); border: 1px solid var(--accent-green); padding: 4px 10px;">TOTAL LEADS: 1,480</span>
+                            <select id="map-sector-select" onchange="renderMapData()" style="width: auto; background: #000; border: 1px solid var(--accent-green); color: #fff; padding: 4px 10px; font-family: 'Courier New'; font-size: 0.8rem; height: 32px;">
+                                <option value="noleggio">Settore: Noleggio Mezzi & Flotte</option>
+                                <option value="logistica">Settore: Autotrasporti & Logistica</option>
+                                <option value="ortofrutta">Settore: Ortofrutta Industriale</option>
+                                <option value="web">Settore: Web Agency & Servizi IT</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="map-frame-wrapper">
+                        <div id="tactical-map"></div>
+                    </div>
+                </div>
+
+                <!-- TAB PANEL 3: AI VALIDATION ENGINE -->
+                <div id="panel-ai" class="tab-panel">
+                    <div style="padding: 15px; background: rgba(189, 0, 255, 0.05); border: 1px solid var(--accent-purple); margin-bottom: 20px;">
+                        <h4 style="color: var(--accent-purple); font-family: 'Orbitron'; margin-bottom: 8px;"><i class="fas fa-brain"></i> MOTORE DI VALUTAZIONE SEMANTICA (LLAMA 3.1 & GEMINI 1.5)</h4>
+                        <p style="color: #ccc; font-size: 0.82rem; line-height: 1.5;">
+                            Il bot non si limita a scaricare contatti: legge la homepage ed i metadati dei siti aziendali ufficiali.
+                            Valuta l'effettivo settore della società ed assegna l'indicatore <code>sito_moderno</code> motivando in linguaggio naturale eventuali carenze nel sito web del prospect.
+                        </p>
+                    </div>
+
+                    <div class="terminal-wrapper" style="height: 280px;">
+                        <div class="terminal-top">
+                            <div class="terminal-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+                            <div class="terminal-title">AI_SEMANTIC_EVALUATION.log</div>
+                        </div>
+                        <div class="terminal-content" id="ai-logs">
+                            <div class="log-entry"><span class="log-purple">[AI MODEL] Connected to Llama 3.1 local / Gemini 1.5 Flash endpoint.</span></div>
+                            <div class="log-entry"><span class="log-sys">[AI EVAL] EuroRent Logistica Srl -> Sector Match: 100% | sito_moderno: TRUE (Responsive & SSL OK)</span></div>
+                            <div class="log-entry"><span class="log-warn">[AI EVAL] NordEst Spedizioni -> Sector Match: 100% | sito_moderno: FALSE (Motivo: Layout datato non ottimizzato per smartphone)</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB PANEL 4: POSTMASTER MAIL BOT -->
+                <div id="panel-postmaster" class="tab-panel">
+                    <div style="padding: 15px; background: rgba(0, 255, 136, 0.05); border: 1px solid var(--accent-green); margin-bottom: 20px;">
+                        <h4 style="color: var(--accent-green); font-family: 'Orbitron'; margin-bottom: 8px;"><i class="fas fa-magic"></i> POSTMASTER: COLD OUTREACH AUTOMATION</h4>
+                        <p style="color: #ccc; font-size: 0.82rem; line-height: 1.5;">
+                            Modulo di scrittura intelligente per e-mail commerciali B2B a freddo. Genera testi unici, umani e altamente personalizzati 
+                            per ciascun titolare o responsabile aziendale individuato durante l'analisi OSINT.
+                        </p>
+                    </div>
+
+                    <div class="terminal-wrapper" style="height: 280px;">
+                        <div class="terminal-top">
+                            <div class="terminal-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+                            <div class="terminal-title">POSTMASTER_TEMPLATES.log</div>
+                        </div>
+                        <div class="terminal-content" id="postmaster-logs">
+                            <div class="log-entry"><span class="log-sys">[POSTMASTER] Active Template: 'ai_personalizzata'</span></div>
+                            <div class="log-entry"><span class="log-purple">[OUTREACH BOZZA #1] Oggetto: Proposta di flotta e noleggio operativo per EuroRent Logistica Srl</span></div>
+                            <div class="log-entry"><span class="log-purple">[OUTREACH BOZZA #2] Oggetto: Restyling digitale e flotta veicoli per NordEst Spedizioni</span></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-value">99.8%</div>
-            <div class="stat-label">OSINT Accuracy</div>
+
+        <!-- FEATURES GRID -->
+        <div class="section-header">
+            <h2 class="section-title">TECNOLOGIA OSINT v6.0</h2>
+            <p class="section-sub">Un’architettura proprietaria da oltre 52.000 righe di codice costruita per la massima accuratezza B2B.</p>
         </div>
-        <div class="stat-card">
-            <div class="stat-value">Zero</div>
-            <div class="stat-label">Dati Personali</div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-spider feature-icon"></i>
+                <h3 class="feature-title">Scansione Ibrida v6.0</h3>
+                <p class="feature-desc">
+                    Crawling web diretto e ad alte prestazioni tramite Cloudscraper con fallback automatico su Selenium headless. 
+                    Gestione intelligente dell'attesa di stabilizzazione per Single Page Application (SPA).
+                </p>
+            </div>
+
+            <div class="feature-card purple-card">
+                <i class="fas fa-brain feature-icon"></i>
+                <h3 class="feature-title">AI Semantic Check</h3>
+                <p class="feature-desc">
+                    Analisi del contenuto web con Llama 3.1 e Gemini 1.5 Flash. Rileva automaticamente la modernità del sito 
+                    (<code>sito_moderno</code>) e motiva gli eventuali punti critici per la proposta commerciale.
+                </p>
+            </div>
+
+            <div class="feature-card purple-card">
+                <i class="fas fa-paper-plane feature-icon"></i>
+                <h3 class="feature-title">Postmaster Cold Outreach</h3>
+                <p class="feature-desc">
+                    Generazione automatica di e-mail ad alto tasso di conversione. Scrive testi altamente personalizzati ed umani 
+                    proponendo servizi specifici (es. ManuOpus Rent o Restyling Web).
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-shield-alt feature-icon"></i>
+                <h3 class="feature-title">Anti-Directory & GDPR Safe</h3>
+                <p class="feature-desc">
+                    Filtri ad auto-apprendimento per prevenire la collisione dei domini ed escludere automaticamente aggregatori, 
+                    pagine <code>/azienda/</code> o <code>/scheda/</code>. Zero dati personali di consumatori.
+                </p>
+            </div>
         </div>
+
+        <!-- STATS MATRICES -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-val">52.000+</div>
+                <div class="stat-lbl">RIGHE DI CODICE ENGINE</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val purple">99.8%</div>
+                <div class="stat-lbl">ACCURATEZZA OSINT</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val">ZERO</div>
+                <div class="stat-lbl">DATI PERSONALI / GDPR RISK</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val purple">Llama 3.1</div>
+                <div class="stat-lbl">AI SEMANTIC MODEL</div>
+            </div>
+        </div>
+
+        <!-- COMPLIANCE & TECH DEMO BOX -->
+        <div class="modal-box-static">
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle"></i> SYSTEM ALERT: TECH DEMO & DISCLAIMER</h3>
+            <p class="modal-msg">
+                Questa pagina è una <strong>Tech Demo / Portfolio Project</strong> creata per mostrare le potenzialità 
+                dell'engine OSINT Delta Bot v6.0. Nessun dato reale viene memorizzato tramite l'interfaccia di anteprima pubblica. 
+                Il servizio di Market Intelligence è fornito esclusivamente in ambito B2B su mandato diretto.
+            </p>
+            <a onclick="openMail()" class="btn-action" style="padding: 10px 24px;">
+                <i class="fas fa-envelope"></i> CONTATTA UN ANALISTA OSINT
+            </a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>&copy; 2026 B2B Scout OSINT Intelligence. Delta Bot v6.0 Core.</p>
+            <p style="margin-top: 12px; opacity: 0.6;">
+                Status: Operational Prototype | Hosted on GitHub Pages <br><br>
+                <a href="terms.html">Termini di Servizio</a> | 
+                <a href="privacy.html">Privacy Policy</a>
+            </p>
+        </footer>
     </div>
 
-    <section class="demo-section">
-        <div class="text-content">
-            <h2 style="font-family: 'Orbitron'; font-size: 2rem; margin-bottom: 20px; color: #fff;">Non compriamo liste.<br>Le costruiamo.</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">
-                La maggior parte dei venditori di dati ti offre file Excel vecchi di 2 anni.
-            </p>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">
-                <strong>B2B Scout agisce su mandato:</strong> il nostro bot visita i siti web delle aziende in tempo reale, legge il contenuto con l'AI per capire se sono *davvero* in target, ed estrae solo contatti business verificati.
-            </p>
-            <ul style="list-style: none; color: var(--text-main);">
-                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success); margin-right: 10px;"></i> <strong>Arricchimento Dati:</strong> P.IVA, Social, Telefoni.</li>
-                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success); margin-right: 10px;"></i> <strong>Zero Spam:</strong> Filtriamo solo contatti decisionali pubblici.</li>
-            </ul>
-        </div>
-
-        <div class="terminal">
-            <div class="terminal-header">
-                <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-                <div style="margin-left: auto; color: #555; font-size: 0.7rem;">live_engine.log</div>
-            </div>
-            <div class="terminal-body" id="term-logs">
-                <div class="log-item"><span class="cmd">></span> INIT SCAN: SETTORE_LOGISTICA [VR]</div>
-                <div class="log-item"><span class="cmd">></span> TARGETS FOUND: 1,420 URLS</div>
-                <div class="log-item">... Analyzing content (Semantic Check) ...</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="compliance-box">
-        <div class="legal-text">
-            <strong style="color: #fff; display: block; margin-bottom: 10px;">NOTE LEGALI & DISCLAIMER</strong>
-            <p>
-                Questa pagina è una <strong>Tech Demo / Portfolio Project</strong> creata a scopo dimostrativo.
-                Non è un servizio commerciale attivo aperto al pubblico generalista.
-                Nessun dato reale viene salvato tramite questa interfaccia pubblica.
-                Il servizio di Market Intelligence è fornito esclusivamente B2B su mandato specifico.
-            </p>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 B2B Scout. Tech Demo.</p>
-        <p style="margin-top: 10px; opacity: 0.5;">
-            Project Status: Prototype | Hosted on GitHub Pages <br><br>
-            <a href="terms.html" target="_blank" style="color: #64748b; text-decoration: none; margin: 0 10px;">Termini di Servizio</a> | 
-            <a href="privacy.html" target="_blank" style="color: #64748b; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
-        </p>
-    </footer>
-
+    <!-- LOG SIMULATION & MAP ENGINE SCRIPT -->
     <script>
-        const logs = [
-            { text: "Demo Logistics Srl... [ANALYZING]", type: "info" },
-            { text: "MATCH: 'Logistica', 'Flotta', 'Verona'", type: "success" },
-            { text: ">> LEAD ACQUIRED: info@demologistics.it", type: "success" },
+        // PROVINCES COORDINATES MAP (Centroidi Italiani)
+        const PROVINCES = {
+            "AG": [37.3111, 13.5765], "AL": [44.9133, 8.6147], "AN": [43.6158, 13.5189], "AO": [45.7373, 7.3201],
+            "AP": [42.8547, 13.5749], "AQ": [42.3498, 13.3995], "AR": [43.4632, 11.8700], "AT": [44.9008, 8.2068],
+            "AV": [40.9144, 14.7887], "BA": [41.1171, 16.8719], "BG": [45.6983, 9.6773], "BI": [45.5630, 8.0580],
+            "BL": [46.1363, 12.2167], "BN": [41.1296, 14.7824], "BO": [44.4949, 11.3426], "BR": [40.6327, 17.9418],
+            "BS": [45.5416, 10.2118], "BT": [41.2827, 16.2952], "BZ": [46.4983, 11.3548], "CA": [39.2238, 9.1217],
+            "CB": [41.5603, 14.6627], "CE": [41.0724, 14.3326], "CH": [42.3510, 14.1675], "CL": [37.4902, 14.0622],
+            "CN": [44.3845, 7.5427], "CO": [45.8081, 9.0852], "CR": [45.1332, 10.0213], "CS": [39.3000, 16.2500],
+            "CT": [37.5079, 15.0830], "CZ": [38.9098, 16.5877], "EN": [37.5676, 14.2796], "FC": [44.2225, 12.0407],
+            "FE": [44.8381, 11.6198], "FG": [41.4622, 15.5446], "FI": [43.7696, 11.2558], "FM": [43.1606, 13.7186],
+            "FR": [41.6398, 13.3411], "GE": [44.4056, 8.9463], "GO": [45.9412, 13.6202], "GR": [42.7673, 11.1092],
+            "IM": [43.8860, 8.0269], "IS": [41.5938, 14.2307], "KR": [39.0805, 17.1102], "LC": [45.8566, 9.3902],
+            "LE": [40.3520, 18.1740], "LI": [43.5485, 10.3106], "LO": [45.3142, 9.5028], "LT": [41.4676, 12.9038],
+            "LU": [43.8429, 10.5027], "MB": [45.5845, 9.2736], "MC": [43.3003, 13.4531], "ME": [38.1938, 15.5540],
+            "MI": [45.4642, 9.1900], "MN": [45.1564, 10.7914], "MO": [44.6471, 10.9252], "MS": [44.0371, 10.1145],
+            "MT": [40.6664, 16.6043], "NA": [40.8518, 14.2681], "NO": [45.4469, 8.6212], "NU": [40.3230, 9.3303],
+            "OR": [39.9056, 8.5916], "PA": [38.1157, 13.3613], "PC": [45.0526, 9.6930], "PD": [45.4064, 11.8768],
+            "PE": [42.4618, 14.2161], "PG": [43.1107, 12.3908], "PI": [43.7228, 10.4017], "PN": [45.9575, 12.6586],
+            "PO": [43.8777, 11.1022], "PR": [44.8015, 10.3279], "PT": [43.9301, 10.9180], "PU": [43.9125, 12.9155],
+            "PV": [45.1850, 9.1560], "PZ": [40.6404, 15.8056], "RA": [44.4184, 12.2035], "RC": [38.1113, 15.6473],
+            "RE": [44.6994, 10.6304], "RI": [42.4042, 12.8620], "RM": [41.9028, 12.4964], "RN": [44.0678, 12.5695],
+            "RO": [45.0711, 11.7900], "SA": [40.6824, 14.7681], "SI": [43.3188, 11.3308], "SO": [46.1709, 9.8715],
+            "SP": [44.1025, 9.8241], "SR": [37.0755, 15.2866], "SS": [40.7259, 8.5556], "SV": [44.3079, 8.4811],
+            "TA": [40.4761, 17.2297], "TE": [42.6617, 13.6991], "TN": [46.0697, 11.1211], "TO": [45.0703, 7.6869],
+            "TP": [38.0177, 12.5362], "TR": [42.5638, 12.6445], "TS": [45.6495, 13.7768], "TV": [45.6669, 12.2424],
+            "UD": [46.0619, 13.2421], "VA": [45.8206, 8.8251], "VB": [45.9220, 8.5516], "VC": [45.3208, 8.4197],
+            "VE": [45.4408, 12.3155], "VI": [45.5475, 11.5496], "VR": [45.4384, 10.9916], "VT": [42.4174, 12.1047],
+            "VV": [38.6754, 16.1025]
+        };
+
+        let leafletMap = null;
+        let mapLayerGroup = null;
+
+        function initTacticalMap() {
+            if (leafletMap) return;
+
+            leafletMap = L.map('tactical-map', {
+                center: [41.9028, 12.4964],
+                zoom: 6,
+                zoomControl: true,
+                attributionControl: false
+            });
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(leafletMap);
+
+            mapLayerGroup = L.layerGroup().addTo(leafletMap);
+            renderMapData();
+        }
+
+        function renderMapData() {
+            if (!mapLayerGroup) return;
+            mapLayerGroup.clearLayers();
+
+            const mockDensity = {
+                "VR": 142, "PD": 128, "VI": 95, "TV": 84, "MI": 210, "BS": 160, "BG": 115,
+                "BO": 130, "MO": 88, "RO": 62, "VE": 75, "RM": 190, "BA": 90, "TO": 140
+            };
+
+            let totalSum = 0;
+
+            Object.keys(PROVINCES).forEach(provCode => {
+                const coords = PROVINCES[provCode];
+                const count = mockDensity[provCode] || Math.floor(Math.random() * 25) + 3;
+                totalSum += count;
+
+                let color = '#00ff88';
+                let fillColor = '#00ff88';
+                let radius = 6 + (count / 210) * 16;
+
+                if (count > 130) {
+                    color = '#ff3333';
+                    fillColor = '#ff3333';
+                } else if (count > 80) {
+                    color = '#ffbd2e';
+                    fillColor = '#ffbd2e';
+                }
+
+                const marker = L.circleMarker(coords, {
+                    radius: radius,
+                    color: color,
+                    weight: 2,
+                    opacity: 0.85,
+                    fillColor: fillColor,
+                    fillOpacity: 0.45
+                });
+
+                const popupHtml = `
+                    <div style="font-family: 'Courier New', monospace; font-size: 0.85rem;">
+                        <strong style="color: #fff; font-family: Orbitron; font-size: 1rem;">PROVINCIA [${provCode}]</strong><br>
+                        <span style="color: ${color}; font-weight: bold;">LEADS VALIDATI: ${count}</span><br>
+                        <span style="color: #888; font-size: 0.75rem;">FONTE: OSINT LIVE WEB SEARCH</span>
+                    </div>
+                `;
+
+                marker.bindPopup(popupHtml);
+                marker.addTo(mapLayerGroup);
+            });
+
+            document.getElementById('map-total-badge').innerText = `TOTAL LEADS: ${totalSum.toLocaleString()}`;
+        }
+
+        // TERMINAL LOGS ENGINE
+        const sampleLogs = [
+            { text: "HARVEST: Querying sector 'Noleggio Mezzi' in [VR]...", type: "sys" },
+            { text: "LINKER: Identified target domain -> eurorent-logistica.it", type: "sys" },
+            { text: "SCANNER: Extracting contacts via Hybrid Scraper...", type: "sys" },
+            { text: "AI CHECK [Llama 3.1]: Sector Match = TRUE ('Noleggio Furgoni', 'Flotta Truck')", type: "purple" },
+            { text: "AI CHECK: sito_moderno = TRUE | SSL = OK | Responsive = OK", type: "purple" },
+            { text: ">> LEAD ACQUIRED: commerciale@eurorent-logistica.it [P.IVA 0429...]", type: "match" },
             
-            { text: "Trattoria La Piazza... [ANALYZING]", type: "info" },
-            { text: "DROP: Sector Mismatch (Ristorazione)", type: "error" },
+            { text: "LINKER: Identified target domain -> trattoriarossi.it", type: "sys" },
+            { text: "AI CHECK: Sector Mismatch -> Detected 'Ristorazione'. DROPPED.", type: "drop" },
             
-            { text: "Studio Legale Rossi... [ANALYZING]", type: "info" },
-            { text: "DROP: Sector Mismatch (Servizi Legali)", type: "error" },
+            { text: "LINKER: Identified target domain -> nordest-trasporti.com", type: "sys" },
+            { text: "SCANNER: Direct Web Crawling engaged...", type: "warn" },
+            { text: "AI CHECK [Gemini 1.5]: Sector Match = TRUE ('Autotrasporti')", type: "purple" },
+            { text: "AI CHECK: sito_moderno = FALSE (Motivo: Layout obsoleto non-mobile)", type: "warn" },
+            { text: ">> POSTMASTER: Generated Outreach Draft (Pitching ManuOpus Rent + Web Redesign)", type: "purple" },
+            { text: ">> LEAD ACQUIRED: info@nordest-trasporti.com [P.IVA 0188...]", type: "match" },
 
-            { text: "Omega Spedizioni Spa... [ANALYZING]", type: "info" },
-            { text: "MATCH: 'International', 'Cargo', 'Milano'", type: "success" },
-            { text: ">> LEAD ACQUIRED: sales@omegaspedizioni.com", type: "success" },
-
-            { text: "Personal Blog Marco... [ANALYZING]", type: "info" },
-            { text: "DROP: GDPR Risk (Personal Email)", type: "error" },
-
-            { text: "Nova Plast Snc... [ANALYZING]", type: "info" },
-            { text: "DROP: Sector Mismatch (Produzione)", type: "error" },
-
-            { text: "Test Cargo Solutions... [ANALYZING]", type: "info" },
-            { text: "MATCH: 'Spedizioni', 'Magazzino'", type: "success" },
-            
-            { text: "Web Agency Creativa... [ANALYZING]", type: "info" },
-            { text: "DROP: No Match Keywords", type: "error" },
-            
-            { text: "Global Freight Ltd... [ANALYZING]", type: "info" },
-            { text: "MATCH: 'Import/Export', 'Customs'", type: "success" },
-            { text: ">> LEAD ACQUIRED: contact@globalfreight.demo", type: "success" },
-
-            { text: "Green Garden Store... [ANALYZING]", type: "info" },
-            { text: "DROP: Sector Mismatch (Retail)", type: "error" }
+            { text: "LINKER: Anti-Directory Filter triggered for path /azienda/12903. DROPPED.", type: "drop" }
         ];
 
         const termBody = document.getElementById('term-logs');
-        let logIndex = 0;
+        const counterEl = document.getElementById('lead-counter');
+        let currentLeadCount = 14;
+        let logIdx = 0;
 
-        function addLog() {
-            if (logIndex >= logs.length) logIndex = 0;
-            const log = logs[logIndex];
+        function appendLog() {
+            if (!termBody) return;
+            if (logIdx >= sampleLogs.length) logIdx = 0;
+            const log = sampleLogs[logIdx];
             
             const div = document.createElement('div');
-            div.className = 'log-item';
+            div.className = 'log-entry';
             
-            if (log.type === 'success') div.innerHTML = `<span class="log-success">✓ ${log.text}</span>`;
-            else if (log.type === 'error') div.className += ' log-error';
-            else div.innerHTML = `<span class="cmd">></span> ${log.text}`;
-            
-            div.innerText = div.innerText || log.text;
-            
+            if (log.type === 'sys') {
+                div.innerHTML = `<span class="log-sys">[SYSTEM] ${log.text}</span>`;
+            } else if (log.type === 'purple') {
+                div.innerHTML = `<span class="log-purple">[AI ENGINE] ${log.text}</span>`;
+            } else if (log.type === 'match') {
+                div.innerHTML = `<span class="log-match">✓ ${log.text}</span>`;
+                currentLeadCount++;
+                if (counterEl) counterEl.innerText = `LEADS: ${currentLeadCount}`;
+            } else if (log.type === 'drop') {
+                div.innerHTML = `<span class="log-drop">✗ ${log.text}</span>`;
+            } else if (log.type === 'warn') {
+                div.innerHTML = `<span class="log-warn">⚠ ${log.text}</span>`;
+            }
+
             termBody.appendChild(div);
             termBody.scrollTop = termBody.scrollHeight;
-            
-            if (termBody.children.length > 8) termBody.removeChild(termBody.children[0]);
-            
-            logIndex++;
-            setTimeout(addLog, Math.random() * 800 + 400);
+
+            if (termBody.children.length > 14) {
+                termBody.removeChild(termBody.children[0]);
+            }
+
+            logIdx++;
+            setTimeout(appendLog, Math.floor(Math.random() * 800) + 600);
         }
 
-        setTimeout(addLog, 1000);
+        setTimeout(appendLog, 1200);
+
+        function restartDemoLogs() {
+            termBody.innerHTML = '<div class="log-entry"><span class="log-sys">[SYSTEM] Restarting Demo Scanner Stream...</span></div>';
+            logIdx = 0;
+        }
+
+        function triggerAIBursts() {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span class="log-purple">[AI BURST] Running Llama 3.1 semantic check on current target list... 100% VALIDATED.</span>`;
+            termBody.appendChild(div);
+            termBody.scrollTop = termBody.scrollHeight;
+        }
+
+        function switchConsoleTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'active-purple'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+            const panelEl = document.getElementById(`panel-${tabName}`);
+            if (panelEl) panelEl.classList.add('active');
+
+            const btnEl = document.getElementById(`tab-${tabName}-btn`);
+            if (btnEl) {
+                if (tabName === 'ai' || tabName === 'postmaster') {
+                    btnEl.classList.add('active-purple');
+                } else {
+                    btnEl.classList.add('active');
+                }
+            }
+
+            if (tabName === 'map') {
+                setTimeout(() => {
+                    initTacticalMap();
+                    if (leafletMap) leafletMap.invalidateSize();
+                }, 100);
+            }
+        }
 
         function openMail() {
             const user = 'deltamk';
             const domain = 'protonmail.com';
-            const subject = "Richiesta Accesso OSINT";
-            const body = "Ciao, vorrei maggiori informazioni sul servizio di ricerca target...";
+            const subject = "Richiesta Servizio OSINT B2B Scout";
+            const body = "Ciao, vorrei richiedere maggiori informazioni e un'analisi target per il nostro settore...";
             window.location.href = `mailto:${user}@${domain}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     </script>
-
 </body>
 </html>
