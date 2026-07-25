@@ -94,7 +94,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 920px;
             margin: 30px auto;
             padding: 0 20px;
         }
@@ -283,7 +283,7 @@
 
     <div class="container">
         <h1 class="hero-title">PRIVACY POLICY & GDPR COMPLIANCE</h1>
-        <span class="update-tag"><i class="fas fa-microchip"></i> Protocollo OSINT Market Intelligence v6.0 | Aggiornato Luglio 2026</span>
+        <span class="update-tag"><i class="fas fa-microchip"></i> Protocollo OSINT Market Intelligence v6.0 | Aggiornato 25 Luglio 2026</span>
 
         <!-- TELEMETRY BADGES -->
         <div class="telemetry-grid">
@@ -310,15 +310,16 @@
             <div class="module-header" onclick="toggleModule(this)">
                 <div class="module-title">
                     <i class="fas fa-terminal" style="color: var(--accent-green);"></i>
-                    MODULE 01 // AMBITO DI APPLICAZIONE & TECH DEMO
+                    MODULE 01 // 1. AMBITO DI APPLICAZIONE
                 </div>
                 <span class="module-status">VERIFIED</span>
             </div>
             <div class="module-body show">
-                <p>Questa informativa distingue chiaramente tra i dati di navigazione di questa piattaforma pubblica dimostrativa (Tech Demo) e i dati trattati nell'ambito del servizio di Market Intelligence B2B su mandato.</p>
+                <p>Questa informativa distingue tra i dati di navigazione del presente sito (Tech Demo) e i dati trattati nell'ambito del servizio di Market Intelligence erogato ai clienti.</p>
+                <p><strong>Sito Web:</strong> Questa interfaccia pubblica non salva dati di ricerca né profila i visitatori. Nessun dato inserito nella "console" dimostrativa viene memorizzato.</p>
                 <div class="code-block">
                     PROT_SYS_01: PUBLIC_INTERFACE -> NO_DATABASE_LOGGING<br>
-                    Nessun dato di ricerca immesso nell'interfaccia pubblica viene conservato o ceduto a terzi.
+                    Nessun dato di ricerca immesso nell'interfaccia pubblica viene conservato.
                 </div>
             </div>
         </div>
@@ -328,20 +329,21 @@
             <div class="module-header" onclick="toggleModule(this)">
                 <div class="module-title">
                     <i class="fas fa-balance-scale" style="color: var(--accent-purple);"></i>
-                    MODULE 02 // COMPLIANCE GDPR & BASE GIURIDICA
+                    MODULE 02 // 2. IL SERVIZIO DI INTELLIGENCE (COMPLIANCE GDPR)
                 </div>
                 <span class="module-status" style="color: var(--accent-purple); border-color: var(--accent-purple);">ART. 6.1.f</span>
             </div>
             <div class="module-body">
-                <p>Nell'erogazione dei servizi di ricerca B2B su mandato professionale, operiamo nel pieno rispetto del Regolamento UE 2016/679 (GDPR):</p>
+                <p>Nell'erogazione del servizio di ricerca B2B su mandato, operiamo nel rigoroso rispetto del Regolamento UE 2016/679 (GDPR):</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Base Giuridica:</strong> Legittimo Interesse (Art. 6.1.f GDPR) a favorire le comunicazioni commerciali e le relazioni economiche tra imprese.</li>
+                    <li><strong>Oggetto del Trattamento:</strong> Esclusivamente dati di <em>persone giuridiche</em>, enti e contatti business pubblici (B2B).</li>
+                    <li><strong>Esclusione:</strong> I nostri sistemi escludono i dati personali di privati consumatori, dati sensibili o giudiziari.</li>
+                </ul>
                 <div class="code-block purple">
                     GDPR_LEGAL_BASIS: Legittimo Interesse (Art. 6.1.f GDPR)<br>
                     Trattamento limitato a contatti commerciali pubblici di persone giuridiche ed enti B2B.
                 </div>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li><strong>Esclusione Consumatori:</strong> I nostri algoritmi escludono rigorosamente dati personali di persone fisiche o privati consumatori.</li>
-                    <li><strong>Fonti OSINT:</strong> I dati provengono esclusivamente da fonti web pubbliche e canali ufficiali aziendali.</li>
-                </ul>
             </div>
         </div>
 
@@ -349,14 +351,74 @@
         <div class="legal-module">
             <div class="module-header" onclick="toggleModule(this)">
                 <div class="module-title">
-                    <i class="fas fa-user-shield" style="color: var(--accent-green);"></i>
-                    MODULE 03 // DIRITTI DEGLI INTERESSATI & OPT-OUT
+                    <i class="fas fa-database" style="color: var(--accent-green);"></i>
+                    MODULE 03 // 3. TIPOLOGIA E ORIGINE DEI DATI TRATTATI
                 </div>
-                <span class="module-status">ACTIVE SAFEGUARD</span>
+                <span class="module-status">OSINT SOURCES</span>
             </div>
             <div class="module-body">
-                <p>Garantiamo a ciascuna azienda o rappresentante legale il diritto universale di cancellazione o opposizione al trattamento (Opt-out) in qualsiasi momento.</p>
-                <p>Titolare del trattamento: <strong>B2B Scout Core Team</strong>. Contatto diretto per le richieste di rimozione: <a href="mailto:deltamk@protonmail.com" style="color: var(--accent-green);">deltamk@protonmail.com</a>.</p>
+                <p>I dati raccolti dai nostri sistemi provengono esclusivamente da fonti pubbliche accessibili online (Open Source Intelligence - OSINT) come siti web aziendali, elenchi pubblici, e profili social aziendali.</p>
+                <p><strong>Dati Inclusi:</strong> Ragione sociale, settore di attività, indirizzo della sede legale/operativa, e-mail aziendali pubbliche (es. <code>info@</code>, <code>commerciale@</code>), siti web ufficiali, Partita IVA e numeri di telefono aziendali.</p>
+            </div>
+        </div>
+
+        <!-- MODULE 04 -->
+        <div class="legal-module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <i class="fas fa-bullseye" style="color: var(--accent-purple);"></i>
+                    MODULE 04 // 4. FINALITÀ DEL TRATTAMENTO E DESTINATARI
+                </div>
+                <span class="module-status" style="color: var(--accent-purple); border-color: var(--accent-purple);">B2B INTEL</span>
+            </div>
+            <div class="module-body">
+                <p>I dati sono trattati esclusivamente per finalità di analisi di mercato, arricchimento dati e generazione di contatti B2B (Lead Generation).</p>
+                <p>I destinatari dei dati sono i nostri partner commerciali e clienti (es. agenti di commercio, agenzie di marketing, reti di vendita) che agiscono come Titolari Autonomi del Trattamento.</p>
+            </div>
+        </div>
+
+        <!-- MODULE 05 -->
+        <div class="legal-module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <i class="fas fa-history" style="color: var(--accent-green);"></i>
+                    MODULE 05 // 5. PERIODO DI CONSERVAZIONE
+                </div>
+                <span class="module-status">LIMITED STORAGE</span>
+            </div>
+            <div class="module-body">
+                <p>I dati raccolti sono conservati per il tempo strettamente necessario all'erogazione del servizio di intelligence e alla consegna del report al cliente, o fino a un'eventuale richiesta di opposizione (Opt-out) da parte dell'interessato.</p>
+            </div>
+        </div>
+
+        <!-- MODULE 06 -->
+        <div class="legal-module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <i class="fas fa-user-shield" style="color: var(--accent-purple);"></i>
+                    MODULE 06 // 6. DIRITTI DEGLI INTERESSATI E RECLAMI
+                </div>
+                <span class="module-status" style="color: var(--accent-purple); border-color: var(--accent-purple);">GARANTE PRIVACY</span>
+            </div>
+            <div class="module-body">
+                <p>Sebbene trattiamo prevalentemente dati di persone giuridiche, garantiamo a qualsiasi interessato il diritto di richiedere l'accesso, la rettifica, la cancellazione (Diritto all'Oblio), o l'opposizione al trattamento dei propri dati (Opt-out) scrivendo a: <a href="mailto:deltamk@protonmail.com" style="color: var(--accent-purple);">deltamk@protonmail.com</a>.</p>
+                <p>Gli interessati hanno inoltre il diritto di proporre reclamo al Garante per la Protezione dei Dati Personali (<a href="https://www.garanteprivacy.it" target="_blank" style="color: var(--accent-green);">www.garanteprivacy.it</a>).</p>
+            </div>
+        </div>
+
+        <!-- MODULE 07 -->
+        <div class="legal-module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <i class="fas fa-building" style="color: var(--accent-green);"></i>
+                    MODULE 07 // 7. TITOLARE DEL TRATTAMENTO
+                </div>
+                <span class="module-status">DATA CONTROLLER</span>
+            </div>
+            <div class="module-body">
+                <p>Il Titolare del trattamento è B2B Scout / Delta Bot Project Core Team.<br>
+                Sede in [Indirizzo, Città], P.IVA [Numero P.IVA].<br>
+                Per comunicazioni in ambito privacy: <a href="mailto:deltamk@protonmail.com" style="color: var(--accent-green);">deltamk@protonmail.com</a>.</p>
             </div>
         </div>
 
