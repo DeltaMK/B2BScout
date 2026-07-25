@@ -215,6 +215,54 @@
             box-shadow: 0 0 20px var(--accent-purple-glow);
         }
 
+        /* Mobile Header Responsive Fix */
+        @media (max-width: 850px) {
+            header {
+                flex-direction: column;
+                align-items: center;
+                gap: 14px;
+                padding: 15px;
+                text-align: center;
+            }
+            .retro-nick {
+                justify-content: center;
+                gap: 8px;
+                width: 100%;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .status-pill {
+                width: 100%;
+                justify-content: center;
+            }
+            .btn-action {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-badge {
+                font-size: 1.05rem;
+            }
+            .author-badge {
+                font-size: 0.75rem;
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+            .btn-action {
+                font-size: 0.7rem;
+                padding: 6px 8px;
+            }
+        }
+
         /* Hero Section */
         .hero {
             text-align: center;
